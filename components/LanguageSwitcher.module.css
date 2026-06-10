@@ -1,0 +1,29 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-2);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+  backdrop-filter: blur(10px);
+}
+
+.btn:hover {
+  border-color: var(--color-border-2);
+  color: var(--color-text);
+}
+
+.flag {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.code {
+  letter-spacing: 0.05em;
+}

@@ -1,0 +1,73 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Users ─────────────────────────────────────────────────────────────
+    match /users/{userId} {
+      // Users can read their own document
+      allow read: if request.auth != null && request.auth.uid == userId;
+      // Public profiles: only name, avatarUrl, reputationScore are readable
+      allow read: if request.auth != null
+        && resource.data.keys().hasOnly(['name', 'avatarUrl', 'reputationScore', 'feedbacksGiven', 'feedbacksReceived']);
+      // No client writes — all mutations go through server (Admin SDK)
+      allow write: if false;
+
+      // Transactions sub-collection: owner read only
+      match /transactions/{txId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if false;
+      }
+    }
+
+    // ─── Projects ───────────────────────────────────────────────────────────
+    match /projects/{projectId} {
+      // Public projects are readable by all authenticated users
+      allow read: if request.auth != null
+        && resource.data.status == 'active'
+        && resource.data.visibility == 'public';
+      // Private project detail: only owner or server reads
+      allow read: if request.auth != null
+        && resource.data.ownerId == request.auth.uid;
+      // All writes through server only
+      allow write: if false;
+    }
+
+    // ─── Feedbacks ──────────────────────────────────────────────────────────
+    match /feedbacks/{feedbackId} {
+      // Reviewer and project owner can read
+      allow read: if request.auth != null
+        && (resource.data.reviewerId == request.auth.uid
+          || exists(/databases/$(database)/documents/projects/$(resource.data.projectId))
+          && get(/databases/$(database)/documents/projects/$(resource.data.projectId)).data.ownerId == request.auth.uid);
+      // No client writes
+      allow write: if false;
+    }
+
+    // ─── Credit Transactions ─────────────────────────────────────────────────
+    match /credit_transactions/{txId} {
+      // No direct client access — read via /api/credits
+      allow read, write: if false;
+    }
+
+    // ─── Access Requests ─────────────────────────────────────────────────────
+    match /access_requests/{requestId} {
+      allow read: if request.auth != null
+        && (resource.data.requesterId == request.auth.uid
+          || resource.data.ownerId == request.auth.uid);
+      allow write: if false;
+    }
+
+    // ─── Ship Logs ────────────────────────────────────────────────────────────
+    match /ship_logs/{logId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // ─── Stripe Payments ──────────────────────────────────────────────────────
+    match /stripe_payments/{paymentId} {
+      allow read: if request.auth != null
+        && resource.data.userId == request.auth.uid;
+      allow write: if false;
+    }
+  }
+}

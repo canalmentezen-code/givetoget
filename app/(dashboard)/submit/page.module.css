@@ -1,0 +1,120 @@
+.page { display: flex; flex-direction: column; gap: 28px; max-width: 700px; }
+
+.header { margin-bottom: 4px; }
+
+.title { font-size: 2rem; font-family: var(--font-heading); font-weight: 700; margin-bottom: 8px; }
+
+.subtitle { font-size: 0.95rem; color: var(--color-text-2); line-height: 1.6; }
+
+.cost {
+  font-weight: 700;
+  color: var(--color-gold);
+}
+
+.form { display: flex; flex-direction: column; gap: 28px; }
+
+.errorBanner {
+  padding: 14px 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-md);
+  color: #f87171;
+  font-size: 0.9rem;
+}
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(16px);
+}
+
+.formSectionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--font-heading);
+  color: var(--color-text);
+}
+
+.formSectionDesc { font-size: 0.8rem; color: var(--color-text-3); margin-top: -8px; }
+
+.req { color: var(--color-danger); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.chip {
+  padding: 6px 14px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: var(--font-body);
+  color: var(--color-text-2);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.chip:hover { border-color: var(--color-primary); color: var(--color-text); }
+
+.chipSelected {
+  background: rgba(124, 58, 237, 0.15);
+  border-color: var(--color-primary);
+  color: #a78bfa;
+}
+
+.chipSelectedAccent {
+  background: rgba(20, 184, 166, 0.12);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* Visibility */
+.visibilityOptions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.visOption {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--color-surface-2);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.visOptionSelected {
+  border-color: var(--color-primary);
+  background: rgba(124, 58, 237, 0.1);
+}
+
+.radioInput { display: none; }
+
+.visIcon { font-size: 1.5rem; }
+
+.visLabel { display: block; font-weight: 600; font-size: 0.9rem; color: var(--color-text); }
+
+.visDesc { display: block; font-size: 0.78rem; color: var(--color-text-3); margin-top: 2px; }
+
+.submitRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.costNote { font-size: 0.875rem; color: var(--color-text-2); }
+
+.costNote strong { color: var(--color-gold); }
