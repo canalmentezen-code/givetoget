@@ -29,6 +29,7 @@ export default async function DashboardLayout({
     { href: "/showcase", label: t("nav.showcase"), icon: "🔭" },
     { href: "/submit", label: t("nav.listProject"), icon: "➕" },
     { href: "/access-requests", label: t("nav.accessRequests"), icon: "🔑" },
+    { href: "/leaderboard", label: t("nav.leaderboard"), icon: "🏆" },
     { href: "/profile", label: t("nav.profile"), icon: "👤" },
   ];
 

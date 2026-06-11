@@ -15,11 +15,15 @@ export default function ShowcasePage() {
     niche: "",
     techStack: "",
     helpType: "",
+    search: "",
+    sortBy: "",
   });
 
   const { projects, hasMore, loadMore, isLoading, isValidating } = useProjects({
     niche: filters.niche,
     techStack: filters.techStack,
+    search: filters.search,
+    sortBy: filters.sortBy,
   });
 
   return (

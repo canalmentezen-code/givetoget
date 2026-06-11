@@ -42,6 +42,8 @@ interface Filters {
   niche: string;
   techStack: string;
   helpType: string;
+  search: string;
+  sortBy: string;
 }
 
 interface ProjectFiltersProps {
@@ -53,6 +55,8 @@ export function ProjectFilters({ onChange }: ProjectFiltersProps) {
     niche: "",
     techStack: "",
     helpType: "",
+    search: "",
+    sortBy: "",
   });
 
   const update = (key: keyof Filters, value: string) => {
@@ -62,7 +66,7 @@ export function ProjectFilters({ onChange }: ProjectFiltersProps) {
   };
 
   const reset = () => {
-    const cleared = { niche: "", techStack: "", helpType: "" };
+    const cleared = { niche: "", techStack: "", helpType: "", search: "", sortBy: "" };
     setFilters(cleared);
     onChange(cleared);
   };
@@ -71,6 +75,18 @@ export function ProjectFilters({ onChange }: ProjectFiltersProps) {
 
   return (
     <div className={styles.container} role="search" aria-label="Filter projects">
+      <div className={styles.searchField}>
+        <label htmlFor="filter-search" className={styles.label}>Pesquisa</label>
+        <input
+          id="filter-search"
+          type="text"
+          className={styles.searchInput}
+          placeholder="Pesquisar projetos (nome, stack, descrição)..."
+          value={filters.search}
+          onChange={(e) => update("search", e.target.value)}
+        />
+      </div>
+
       <div className={styles.filters}>
         <div className={styles.field}>
           <label htmlFor="filter-niche" className={styles.label}>Niche</label>
@@ -103,17 +119,15 @@ export function ProjectFilters({ onChange }: ProjectFiltersProps) {
         </div>
 
         <div className={styles.field}>
-          <label htmlFor="filter-help" className={styles.label}>Help Needed</label>
+          <label htmlFor="filter-sort" className={styles.label}>Ordenar por</label>
           <select
-            id="filter-help"
+            id="filter-sort"
             className={styles.select}
-            value={filters.helpType}
-            onChange={(e) => update("helpType", e.target.value)}
+            value={filters.sortBy}
+            onChange={(e) => update("sortBy", e.target.value)}
           >
-            <option value="">All types</option>
-            {HELP_TYPES.map((h) => (
-              <option key={h} value={h}>{h}</option>
-            ))}
+            <option value="">Mais Recente</option>
+            <option value="views">Mais Visualizados</option>
           </select>
         </div>
       </div>

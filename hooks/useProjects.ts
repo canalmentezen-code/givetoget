@@ -12,6 +12,8 @@ interface Filters {
   niche?: string;
   techStack?: string;
   status?: string;
+  search?: string;
+  sortBy?: string;
 }
 
 const fetcher = (url: string) =>
@@ -28,6 +30,8 @@ export function useProjects(filters: Filters = {}) {
     if (filters.niche) params.set("niche", filters.niche);
     if (filters.techStack) params.set("techStack", filters.techStack);
     if (filters.status) params.set("status", filters.status);
+    if (filters.search) params.set("search", filters.search);
+    if (filters.sortBy) params.set("sortBy", filters.sortBy);
     params.set("limit", "20");
 
     if (pageIndex > 0 && previousPageData?.nextCursor) {

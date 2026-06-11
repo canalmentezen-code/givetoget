@@ -153,3 +153,97 @@
 .badgeLabel {
   font-family: var(--font-body);
 }
+
+.tabsContainer {
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-3);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.tab:hover {
+  color: var(--color-text);
+  background: var(--color-surface-2);
+}
+
+.activeTab {
+  color: var(--color-text);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+}
+
+.feedbackList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.feedbackCard {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.feedbackHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.feedbackProjName {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.feedbackProjName:hover {
+  text-decoration: underline;
+}
+
+.feedbackMeta {
+  display: flex;
+  gap: 12px;
+  font-size: 0.8125rem;
+  color: var(--color-text-3);
+}
+
+.feedbackStars {
+  color: var(--color-gold);
+  font-weight: bold;
+}
+
+.feedbackBody {
+  font-size: 0.875rem;
+  color: var(--color-text-2);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.feedbackFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--color-text-3);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 10px;
+}

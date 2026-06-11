@@ -26,6 +26,8 @@ const ListProjectsSchema = z.object({
   status: z.enum(["active", "paused", "archived"]).optional(),
   limit: z.coerce.number().min(1).max(50).default(20),
   cursor: z.string().optional(), // Firestore document ID for pagination
+  search: z.string().optional(),
+  sortBy: z.string().optional(), // "recent" | "views"
 });
 
 // ─── GET /api/projects ────────────────────────────────────────────────────────
@@ -40,7 +42,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
-  const { niche, techStack, status, limit, cursor } = parsed.data;
+  const { niche, techStack, status, limit, cursor, search, sortBy } = parsed.data;
   const db = getAdminDb();
 
   let query = db
@@ -61,26 +63,51 @@ export async function GET(req: NextRequest) {
     return { id: doc.id, ...rest };
   });
 
-  // Sort in memory by createdAt desc
-  allProjects.sort((a: any, b: any) => {
-    const dateA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
-    const dateB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
-    return dateB - dateA;
-  });
+  // Filter in memory for techStack if specified
+  let filteredProjects = allProjects;
+  if (techStack) {
+    const stacks = techStack.split(",").map((s) => s.trim().toLowerCase());
+    filteredProjects = filteredProjects.filter((p: any) =>
+      p.techStack && p.techStack.some((ts: string) => stacks.includes(ts.toLowerCase()))
+    );
+  }
+
+  // Filter by search term if specified
+  if (search) {
+    const term = search.toLowerCase().trim();
+    filteredProjects = filteredProjects.filter((p: any) =>
+      (p.name && p.name.toLowerCase().includes(term)) ||
+      (p.description && p.description.toLowerCase().includes(term)) ||
+      (p.techStack && p.techStack.some((ts: string) => ts.toLowerCase().includes(term))) ||
+      (p.niche && p.niche.toLowerCase().includes(term))
+    );
+  }
+
+  // Sort in memory
+  if (sortBy === "views") {
+    filteredProjects.sort((a: any, b: any) => (b.viewCount ?? 0) - (a.viewCount ?? 0));
+  } else {
+    // default: recent
+    filteredProjects.sort((a: any, b: any) => {
+      const dateA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
+      const dateB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
+      return dateB - dateA;
+    });
+  }
 
   // Handle pagination in memory
   let startIndex = 0;
   if (cursor) {
-    const idx = allProjects.findIndex((p) => p.id === cursor);
+    const idx = filteredProjects.findIndex((p) => p.id === cursor);
     if (idx !== -1) {
       startIndex = idx + 1;
     }
   }
 
-  const projects = allProjects.slice(startIndex, startIndex + limit);
+  const projects = filteredProjects.slice(startIndex, startIndex + limit);
 
   const nextCursor =
-    allProjects.length > startIndex + limit
+    filteredProjects.length > startIndex + limit
       ? projects[projects.length - 1].id
       : null;
 
