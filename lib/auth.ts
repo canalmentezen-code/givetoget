@@ -50,20 +50,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   callbacks: {
     async signIn({ user, account }) {
-      if (account?.provider === "google") {
-        if (!user.email) return false;
-        try {
-          const { getAdminDb } = await import("./firebase.server");
-          const db = getAdminDb();
-          const q = await db.collection("users").where("email", "==", user.email).limit(1).get();
-          if (q.empty) {
-            console.log(`[Auth] Google login blocked: no existing user with email ${user.email}`);
-            return "/login?error=NoGitAccount";
-          }
-        } catch (err) {
-          console.error("[Auth] Error checking existing user for Google login:", err);
-          return false;
-        }
+      // Allow all providers — account creation/sync handled by the sync-user API route
+      if (account?.provider === "google" && !user.email) {
+        return false; // Block Google logins without an email
       }
       return true;
     },
