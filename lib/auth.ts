@@ -62,7 +62,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               : "http://localhost:3000");
 
           const res = await fetch(
-            `${baseUrl}/api/auth/check-user?email=${encodeURIComponent(user.email)}`,
+            `${baseUrl}/api/check-user?email=${encodeURIComponent(user.email)}`,
             {
               headers: {
                 "x-api-key": process.env.AUTH_SECRET || "fallback-development-secret-only-1234567890",
