@@ -3,6 +3,7 @@
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useLanguage } from "@/components/LanguageProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import styles from "./page.module.css";
@@ -15,6 +16,8 @@ interface LoginFormProps {
 export default function LoginForm({ githubConfigured, googleConfigured }: LoginFormProps) {
   const { t } = useLanguage();
   const [loading, setLoading] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
 
   const handleSignIn = async (provider: string) => {
     if (provider === "github" && !githubConfigured) {
@@ -54,6 +57,16 @@ export default function LoginForm({ githubConfigured, googleConfigured }: LoginF
           <h1 className={styles.title}>{t("login.welcome")}</h1>
           <p className={styles.subtitle}>{t("login.subtitle")}</p>
         </div>
+
+        {error && (
+          <div className={styles.errorBanner}>
+            {error === "NoGitAccount"
+              ? "Apenas utilizadores já registados através do GitHub podem fazer login com o Google. Por favor, entre com o GitHub primeiro!"
+              : error === "OAuthAccountNotLinked"
+              ? "Este e-mail já está associado a outra conta (GitHub). Por favor, faça login com o GitHub para aceder ao seu painel."
+              : "Ocorreu um erro ao tentar fazer login. Por favor, tente novamente."}
+          </div>
+        )}
 
         <div className={styles.providers}>
           <div className={styles.providerWrapper}>
