@@ -10,9 +10,23 @@ function getAdminApp() {
     return getApps()[0];
   }
 
-  const privateKey = process.env.FIREBASE_PRIVATE_KEY
-    ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n")
-    : undefined;
+  if (!process.env.FIREBASE_PROJECT_ID) {
+    throw new Error("[firebase.server] FIREBASE_PROJECT_ID is not set");
+  }
+  if (!process.env.FIREBASE_CLIENT_EMAIL) {
+    throw new Error("[firebase.server] FIREBASE_CLIENT_EMAIL is not set");
+  }
+
+  // Use base64-encoded key to avoid newline escaping issues across environments
+  let privateKey: string;
+  if (process.env.FIREBASE_PRIVATE_KEY_B64) {
+    privateKey = Buffer.from(process.env.FIREBASE_PRIVATE_KEY_B64, "base64").toString("utf8");
+  } else if (process.env.FIREBASE_PRIVATE_KEY) {
+    // Fallback: normalize any literal \n sequences to real newlines
+    privateKey = process.env.FIREBASE_PRIVATE_KEY.split("\\n").join("\n");
+  } else {
+    throw new Error("[firebase.server] Neither FIREBASE_PRIVATE_KEY_B64 nor FIREBASE_PRIVATE_KEY is set");
+  }
 
   return initializeApp({
     credential: cert({
