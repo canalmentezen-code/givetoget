@@ -1,4 +1,4 @@
-const { execSync } = require("child_process");
+const { spawnSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
@@ -40,13 +40,24 @@ for (const key of keys) {
   
   console.log(`Uploading ${key}...`);
   for (const target of targets) {
-    try {
-      execSync(`npx vercel env add ${key} ${target} --force --yes`, {
-        input: value,
-        stdio: ["pipe", "ignore", "pipe"],
-      });
-    } catch (err) {
-      console.error(`Error uploading ${key} to ${target}:`, err.stderr ? err.stderr.toString() : err.message);
+    const result = spawnSync("npx", [
+      "--no-install",
+      "vercel",
+      "env",
+      "add",
+      key,
+      target,
+      "",
+      `--value=${value}`,
+      "--force",
+      "--yes"
+    ], {
+      stdio: "pipe",
+      encoding: "utf-8"
+    });
+    
+    if (result.status !== 0) {
+      console.error(`Error uploading ${key} to ${target}:`, result.stderr || result.error?.message);
     }
   }
 }
