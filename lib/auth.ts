@@ -50,9 +50,41 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   callbacks: {
     async signIn({ user, account }) {
-      // Allow all providers — account creation/sync handled by the sync-user API route
-      if (account?.provider === "google" && !user.email) {
-        return false; // Block Google logins without an email
+      // Google login requires an existing account created via GitHub (same email)
+      if (account?.provider === "google") {
+        if (!user.email) return "/login?error=OAuthAccountNotLinked";
+
+        try {
+          const baseUrl =
+            process.env.NEXT_PUBLIC_APP_URL ||
+            (process.env.VERCEL_URL
+              ? `https://${process.env.VERCEL_URL}`
+              : "http://localhost:3000");
+
+          const res = await fetch(
+            `${baseUrl}/api/auth/check-user?email=${encodeURIComponent(user.email)}`,
+            {
+              headers: {
+                "x-api-key": process.env.AUTH_SECRET || "fallback-development-secret-only-1234567890",
+              },
+            }
+          );
+
+          if (!res.ok) {
+            // API error — redirect with a clear message instead of failing silently
+            console.error(`[Auth] check-user API error: ${res.status}`);
+            return "/login?error=ServerError";
+          }
+
+          const data = await res.json();
+          if (!data.exists) {
+            // No GitHub account with this email — block and explain
+            return "/login?error=NoGitAccount";
+          }
+        } catch (err) {
+          console.error("[Auth] Error checking existing user for Google login:", err);
+          return "/login?error=ServerError";
+        }
       }
       return true;
     },

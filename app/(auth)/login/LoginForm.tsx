@@ -64,6 +64,8 @@ export default function LoginForm({ githubConfigured, googleConfigured }: LoginF
               ? "Apenas utilizadores já registados através do GitHub podem fazer login com o Google. Por favor, entre com o GitHub primeiro!"
               : error === "OAuthAccountNotLinked"
               ? "Este e-mail já está associado a outra conta (GitHub). Por favor, faça login com o GitHub para aceder ao seu painel."
+              : error === "ServerError"
+              ? "Erro interno ao verificar a conta. Por favor, tente novamente."
               : "Ocorreu um erro ao tentar fazer login. Por favor, tente novamente."}
           </div>
         )}
