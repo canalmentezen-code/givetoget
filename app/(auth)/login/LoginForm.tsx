@@ -51,7 +51,7 @@ export default function LoginForm({ githubConfigured, googleConfigured }: LoginF
       <div className={styles.card}>
         <div className={styles.header}>
           <Link href="/" className={styles.logo}>
-            <span className={styles.logoIcon}>⟐</span>
+            <img src="/logo.png" alt="GiveToGet Logo" className={styles.logoImg} />
             GiveToGet
           </Link>
           <h1 className={styles.title}>{t("login.welcome")}</h1>

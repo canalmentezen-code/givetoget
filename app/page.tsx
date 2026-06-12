@@ -46,7 +46,7 @@ export default function LandingPage() {
           <header className={styles.header}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
               <Link href="/" className={styles.logo}>
-                <span className={styles.logoIcon}>⟐</span>
+                <img src="/logo.png" alt="GiveToGet Logo" className={styles.logoImg} />
                 <span>GiveToGet</span>
               </Link>
               <LanguageSwitcher />

@@ -40,7 +40,7 @@ export default async function DashboardLayout({
         <div className={styles.sidebarTop}>
           <div className={styles.logoRow}>
             <Link href="/" className={styles.logo} id="dashboard-logo">
-              <span className={styles.logoIcon}>⟐</span>
+              <img src="/logo.png" alt="GiveToGet Logo" className={styles.logoImg} />
               <span>GiveToGet</span>
             </Link>
             <NotificationBell userId={session.user.id} />
@@ -90,7 +90,7 @@ export default async function DashboardLayout({
         {/* Top bar (mobile) */}
         <header className={styles.topbar}>
           <Link href="/" className={styles.logo}>
-            <span className={styles.logoIcon}>⟐</span>
+            <img src="/logo.png" alt="GiveToGet Logo" className={styles.logoImg} />
             <span>GiveToGet</span>
           </Link>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>

@@ -55,6 +55,12 @@
   background-clip: text;
 }
 
+.logoImg {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
 .nav {
   display: flex;
   flex-direction: column;
