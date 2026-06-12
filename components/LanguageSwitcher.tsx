@@ -3,11 +3,11 @@
 import { useLanguage } from "./LanguageProvider";
 import styles from "./LanguageSwitcher.module.css";
 
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ className }: { className?: string }) {
   const { lang, setLang } = useLanguage();
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${className || ""}`}>
       <button
         className={`${styles.langBtn} ${lang === "pt" ? styles.active : ""}`}
         onClick={() => setLang("pt")}

@@ -82,11 +82,9 @@ export default async function DashboardLayout({
             </div>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 6, margin: "12px 0", width: "100%", borderTop: "1px solid var(--color-border)", paddingTop: 12 }}>
-            <div style={{ display: "flex", gap: 6, justifyContent: "space-between" }}>
-              <LanguageSwitcher />
-              <CurrencySwitcher />
-            </div>
+          <div className={styles.switchersWrapper}>
+            <LanguageSwitcher className={styles.sidebarSwitcher} />
+            <CurrencySwitcher className={styles.sidebarSwitcher} />
           </div>
 
           <Link href="/api/auth/signout" className={styles.signout} id="signout-btn">

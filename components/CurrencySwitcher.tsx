@@ -3,11 +3,11 @@
 import { useCurrency } from "./CurrencyProvider";
 import styles from "./CurrencySwitcher.module.css";
 
-export function CurrencySwitcher() {
+export function CurrencySwitcher({ className }: { className?: string }) {
   const { currency, setCurrency } = useCurrency();
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${className || ""}`}>
       <button
         className={`${styles.currencyBtn} ${currency === "eur" ? styles.active : ""}`}
         onClick={() => setCurrency("eur")}
