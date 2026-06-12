@@ -306,7 +306,11 @@ export default async function ProfilePage({ searchParams }: Props) {
                     )}
 
                     <div className={styles.feedbackFooter}>
-                      <span>Liberado: +{f.creditsHeld} AT em garantia</span>
+                      <span>
+                        {f.status === "approved"
+                          ? `Liberado: +${f.creditsHeld - 1} AT (1 AT taxa da plataforma)`
+                          : `Em garantia: +${f.creditsHeld} AT`}
+                      </span>
                       <span>{f.submittedAt ? new Date(f.submittedAt).toLocaleDateString() : ""}</span>
                     </div>
                   </div>

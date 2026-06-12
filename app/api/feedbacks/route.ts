@@ -76,6 +76,27 @@ export const POST = withAuth(async (req, { userId }) => {
 
   const project = projectSnap.data()!;
 
+  // Stealth mode verification
+  if (project.isStealth && project.ownerId !== userId) {
+    if (reviewerSnap.exists) {
+      const reviewerData = reviewerSnap.data()!;
+      const reputation = reviewerData.reputationScore ?? 1.0;
+      if (reputation < 0.95) {
+        return NextResponse.json(
+          {
+            error: `Este projeto está em Modo Stealth e requer reputação mínima de 95% para avaliar. Sua reputação atual é ${Math.round(reputation * 100)}%.`,
+          },
+          { status: 403 }
+        );
+      }
+    } else {
+      return NextResponse.json(
+        { error: "Perfil do avaliador não encontrado." },
+        { status: 403 }
+      );
+    }
+  }
+
   // Business rule: validate feedback quality and self-review
   const validation = validateFeedback({
     qualitativeText: data.qualitativeText,

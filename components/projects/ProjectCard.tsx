@@ -8,17 +8,33 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
+  const isFeatured = (project as any).isFeatured === true;
+
   return (
-    <Link href={`/showcase/${project.id}`} className={styles.card} id={`project-${project.id}`}>
+    <Link
+      href={`/showcase/${project.id}`}
+      className={`${styles.card} ${isFeatured ? styles.featured : ""}`}
+      id={`project-${project.id}`}
+    >
       <div className={styles.header}>
         <div className={styles.titleRow}>
           <h3 className={styles.name}>{project.name}</h3>
-          <ProjectStatusBadge status={project.status} />
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            {isFeatured && (
+              <Badge variant="gold" size="sm">🏆 Destaque</Badge>
+            )}
+            <ProjectStatusBadge status={project.status} />
+          </div>
         </div>
 
-        {project.visibility === "private" && (
-          <Badge variant="info" size="sm">🔒 Private</Badge>
-        )}
+        <div style={{ display: "flex", gap: 6 }}>
+          {project.visibility === "private" && (
+            <Badge variant="info" size="sm">🔒 Private</Badge>
+          )}
+          {(project as any).isStealth && (
+            <Badge variant="warning" size="sm">🕵️ Stealth</Badge>
+          )}
+        </div>
       </div>
 
       <p className={styles.description}>{project.description}</p>

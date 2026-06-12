@@ -36,6 +36,7 @@ export default function SubmitPage() {
     niche: "",
     helpTypes: [] as string[],
     visibility: "public" as "public" | "private",
+    isStealth: false,
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -264,6 +265,38 @@ export default function SubmitPage() {
                 </div>
               </label>
             ))}
+          </div>
+        </div>
+
+        <div className={styles.formSection}>
+          <h2 className={styles.formSectionTitle}>Modo Stealth (Privacidade Extra)</h2>
+          <p className={styles.formSectionDesc}>
+            Restrinja o acesso aos detalhes e links de teste do seu projeto apenas a avaliadores que possuem reputação de excelência.
+          </p>
+          <div style={{ marginTop: 12 }}>
+            <label
+              className={`${styles.visOption} ${
+                form.isStealth ? styles.visOptionSelected : ""
+              }`}
+              htmlFor="is-stealth-checkbox"
+              style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 12 }}
+            >
+              <input
+                id="is-stealth-checkbox"
+                type="checkbox"
+                checked={form.isStealth}
+                onChange={(e) => setForm((f) => ({ ...f, isStealth: e.target.checked }))}
+                style={{ width: 18, height: 18, cursor: "pointer", accentColor: "var(--color-primary)" }}
+              />
+              <div>
+                <span className={styles.visLabel} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  🕵️ Ativar Modo Stealth
+                </span>
+                <span className={styles.visDesc}>
+                  Apenas avaliadores de elite com reputação &ge; 95% (taxa de aprovação de feedback) poderão visualizar o link e enviar avaliações.
+                </span>
+              </div>
+            </label>
           </div>
         </div>
 

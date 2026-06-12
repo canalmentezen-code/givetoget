@@ -18,6 +18,7 @@ const CreateProjectSchema = z.object({
   niche: z.string().min(2).max(50),
   helpTypes: z.array(z.string()).min(1).max(5),
   visibility: z.enum(["public", "private"]),
+  isStealth: z.boolean().optional(),
 });
 
 const ListProjectsSchema = z.object({
@@ -83,17 +84,22 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  // Sort in memory
-  if (sortBy === "views") {
-    filteredProjects.sort((a: any, b: any) => (b.viewCount ?? 0) - (a.viewCount ?? 0));
-  } else {
-    // default: recent
-    filteredProjects.sort((a: any, b: any) => {
+  // Sort in memory: Featured projects go first
+  filteredProjects.sort((a: any, b: any) => {
+    const isAFeatured = a.isFeatured === true;
+    const isBFeatured = b.isFeatured === true;
+    if (isAFeatured && !isBFeatured) return -1;
+    if (!isAFeatured && isBFeatured) return 1;
+
+    // Tie-breaker
+    if (sortBy === "views") {
+      return (b.viewCount ?? 0) - (a.viewCount ?? 0);
+    } else {
       const dateA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
       const dateB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
       return dateB - dateA;
-    });
-  }
+    }
+  });
 
   // Handle pagination in memory
   let startIndex = 0;
@@ -170,6 +176,7 @@ export const POST = withAuth(async (req, { userId }) => {
     helpTypes: data.helpTypes,
     status: "active" as ProjectStatus,
     visibility: data.visibility as ProjectVisibility,
+    isStealth: data.isStealth ?? false,
     creditsRequired: cost,
     viewCount: 0,
     createdAt: now,

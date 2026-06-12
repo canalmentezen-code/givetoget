@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/Badge";
 import { FeedbackList } from "@/components/feedback/FeedbackList";
 import { ShipLogFeed } from "@/components/projects/ShipLogFeed";
 import { FeedbackFormWrapper } from "./feedback-form";
+import { PromoteButton } from "./promote-button";
 import { cookies } from "next/headers";
 import { getTranslation, Language } from "@/lib/translations";
 import type { Metadata } from "next";
@@ -63,6 +64,50 @@ export default async function ProjectDetailPage({ params }: Props) {
     hasAccess = !accessSnap.empty;
   }
 
+  // Stealth check
+  let isBlockedByStealth = false;
+  let reviewerReputation = 1.0;
+
+  if ((project as any).isStealth && !isOwner) {
+    if (!userId) {
+      isBlockedByStealth = true;
+    } else {
+      const userSnap = await db.collection("users").doc(userId).get();
+      if (userSnap.exists) {
+        const userData = userSnap.data()!;
+        reviewerReputation = userData.reputationScore ?? 1.0;
+        if (reviewerReputation < 0.95) {
+          isBlockedByStealth = true;
+        }
+      } else {
+        isBlockedByStealth = true;
+      }
+    }
+  }
+
+  if (isBlockedByStealth) {
+    return (
+      <div className={styles.page} style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
+        <div className="glass-card" style={{ padding: 40, maxWidth: 500, textAlign: "center", borderRadius: 16, border: "1px solid rgba(239, 68, 68, 0.2)" }}>
+          <span style={{ fontSize: "3rem", display: "block", marginBottom: 16 }} role="img" aria-label="Stealth">🕵️</span>
+          <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: 12, color: "#ef4444" }}>Projeto em Modo Stealth</h2>
+          <p style={{ fontSize: "0.9375rem", color: "var(--color-text-2)", lineHeight: 1.6, marginBottom: 20 }}>
+            Este projeto foi configurado com restrições extras de privacidade pelo criador. Apenas avaliadores com reputação superior a <strong>95%</strong> podem visualizar os detalhes e testar o produto.
+          </p>
+          <div style={{ background: "rgba(255,255,255,0.03)", padding: "16px 20px", borderRadius: 8, border: "1px solid var(--color-border)", marginBottom: 20 }}>
+            <span style={{ fontSize: "0.875rem", color: "var(--color-text-3)", display: "block", marginBottom: 4 }}>Sua reputação atual:</span>
+            <span style={{ fontSize: "1.75rem", fontWeight: "bold", color: "#f87171" }}>
+              {Math.round(reviewerReputation * 100)}%
+            </span>
+          </div>
+          <p style={{ fontSize: "0.8125rem", color: "var(--color-text-3)" }}>
+            Faça avaliações mais detalhadas e úteis em outros projetos públicos para subir a sua reputação na comunidade!
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   // Load feedbacks
   const feedbacksSnap = await db
     .collection("feedbacks")
@@ -116,9 +161,17 @@ export default async function ProjectDetailPage({ params }: Props) {
             {project.visibility === "private" && (
               <Badge variant="info">🔒 Private</Badge>
             )}
+            {(project as any).isStealth && (
+              <Badge variant="warning">🕵️ Stealth</Badge>
+            )}
             <span className={styles.niche}>#{project.niche}</span>
           </div>
-          <h1 className={styles.name}>{project.name}</h1>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+            <h1 className={styles.name}>{project.name}</h1>
+            {(project as any).isFeatured && (
+              <Badge variant="gold" size="sm">🏆 Destaque</Badge>
+            )}
+          </div>
           <p className={styles.description}>{project.description}</p>
 
           <div className={styles.tags}>
@@ -229,6 +282,12 @@ export default async function ProjectDetailPage({ params }: Props) {
               </div>
             </div>
           )}
+
+          <PromoteButton
+            projectId={projectId}
+            isFeatured={(project as any).isFeatured === true}
+            featuredUntil={(project as any).featuredUntil?.toDate ? (project as any).featuredUntil.toDate().toISOString() : null}
+          />
         </section>
       )}
 

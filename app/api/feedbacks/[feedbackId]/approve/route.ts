@@ -80,7 +80,7 @@ export const PATCH = withAuth(async (req, { userId, params }) => {
       feedback.reviewerId,
       "feedback_approved",
       "Feedback Aprovado! 🎉",
-      `Sua avaliação para o projeto "${project.name}" foi aprovada pelo autor. +${feedback.creditsHeld} AT adicionados.`,
+      `Sua avaliação para o projeto "${project.name}" foi aprovada pelo autor. +${feedback.creditsHeld - 1} AT adicionados (1 AT retido de taxa).`,
       `/showcase/${feedback.projectId}`
     );
 

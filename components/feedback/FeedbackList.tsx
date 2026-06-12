@@ -87,13 +87,20 @@ export function FeedbackList({
           <div className={styles.footer}>
             <time className={styles.date}>
               {feedback.submittedAt &&
-                new Date(
-                  (feedback.submittedAt as unknown as { seconds: number }).seconds * 1000
-                ).toLocaleDateString("en-GB", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                })}
+                (() => {
+                  const d = typeof feedback.submittedAt === "string"
+                    ? new Date(feedback.submittedAt)
+                    : (feedback.submittedAt as any).seconds
+                    ? new Date((feedback.submittedAt as any).seconds * 1000)
+                    : new Date(feedback.submittedAt as any);
+                  return isNaN(d.getTime())
+                    ? ""
+                    : d.toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      });
+                })()}
             </time>
 
             {isProjectOwner && feedback.status === "pending" && (

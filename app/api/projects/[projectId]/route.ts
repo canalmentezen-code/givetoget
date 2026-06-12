@@ -64,6 +64,7 @@ const UpdateProjectSchema = z.object({
   helpTypes: z.array(z.string()).min(1).max(5).optional(),
   status: z.enum(["active", "paused", "archived"]).optional(),
   visibility: z.enum(["public", "private"]).optional(),
+  isStealth: z.boolean().optional(),
 });
 
 export const PATCH = withAuth(async (req, { userId, params }) => {

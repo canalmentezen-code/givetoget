@@ -117,3 +117,18 @@
   opacity: 1;
   transform: translateX(0);
 }
+
+.featured {
+  border-color: rgba(245, 158, 11, 0.45);
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.08);
+}
+
+.featured::before {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, transparent 60%);
+}
+
+.featured:hover {
+  border-color: #f59e0b;
+  box-shadow: 0 8px 32px rgba(245, 158, 11, 0.22);
+}
+

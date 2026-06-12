@@ -119,7 +119,7 @@ export async function holdCredits(
 
 /**
  * Release held credits to the reviewer when feedback is approved.
- * The reviewer now earns the full reward amount.
+ * Deducts 1 AT platform transaction fee and transfers it to the system_platform account.
  */
 export async function releaseCredits(
   userId: string,
@@ -127,13 +127,73 @@ export async function releaseCredits(
   feedbackId: string,
   projectName: string
 ): Promise<void> {
-  await applyTransaction(
-    userId,
-    "release",
-    amount,
-    `Feedback approved for "${projectName}"`,
-    feedbackId
-  );
+  const platformFee = 1;
+  const reviewerAmount = amount - platformFee;
+
+  // 1. Release reviewer amount to reviewer
+  if (reviewerAmount > 0) {
+    await applyTransaction(
+      userId,
+      "release",
+      reviewerAmount,
+      `Feedback approved for "${projectName}" (after platform fee)`,
+      feedbackId
+    );
+  }
+
+  // 2. Transfer platformFee to system_platform user
+  if (platformFee > 0) {
+    const firestore = db();
+    const platformRef = firestore.collection("users").doc("system_platform");
+    
+    await firestore.runTransaction(async (tx) => {
+      const platformSnap = await tx.get(platformRef);
+      if (!platformSnap.exists) {
+        tx.set(platformRef, {
+          id: "system_platform",
+          name: "GiveToGet Platform",
+          email: "platform@givetoget.com",
+          creditBalance: platformFee,
+          transferableBalance: platformFee,
+          feedbacksGiven: 0,
+          feedbacksReceived: 0,
+          createdAt: FieldValue.serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp(),
+        });
+      } else {
+        const data = platformSnap.data()!;
+        const current = (data.creditBalance ?? 0) as number;
+        const currentTransferable = (data.transferableBalance ?? 0) as number;
+        tx.update(platformRef, {
+          creditBalance: current + platformFee,
+          transferableBalance: currentTransferable + platformFee,
+          updatedAt: FieldValue.serverTimestamp(),
+        });
+      }
+
+      // Write credit transaction for platform
+      const txRef = firestore.collection("credit_transactions").doc();
+      tx.set(txRef, {
+        id: txRef.id,
+        userId: "system_platform",
+        type: "platform_fee",
+        amount: platformFee,
+        refId: feedbackId,
+        description: `Platform fee for feedback on "${projectName}"`,
+        createdAt: FieldValue.serverTimestamp(),
+      });
+
+      // Mirror to sub-collection
+      const mirrorRef = platformRef.collection("transactions").doc(txRef.id);
+      tx.set(mirrorRef, {
+        id: txRef.id,
+        type: "platform_fee",
+        amount: platformFee,
+        description: `Platform fee for feedback on "${projectName}"`,
+        createdAt: FieldValue.serverTimestamp(),
+      });
+    });
+  }
 }
 
 /**
