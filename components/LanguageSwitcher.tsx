@@ -7,13 +7,23 @@ export function LanguageSwitcher() {
   const { lang, setLang } = useLanguage();
 
   return (
-    <button
-      className={styles.btn}
-      onClick={() => setLang(lang === "pt" ? "en" : "pt")}
-      aria-label={lang === "pt" ? "Mudar para inglês" : "Switch to Portuguese"}
-    >
-      <span className={styles.flag}>{lang === "pt" ? "🇧🇷" : "🇬🇧"}</span>
-      <span className={styles.code}>{lang === "pt" ? "PT" : "EN"}</span>
-    </button>
+    <div className={styles.container}>
+      <button
+        className={`${styles.langBtn} ${lang === "pt" ? styles.active : ""}`}
+        onClick={() => setLang("pt")}
+        aria-label="Português"
+      >
+        <span className={styles.flag}>🇧🇷</span>
+        <span className={styles.code}>PT</span>
+      </button>
+      <button
+        className={`${styles.langBtn} ${lang === "en" ? styles.active : ""}`}
+        onClick={() => setLang("en")}
+        aria-label="English"
+      >
+        <span className={styles.flag}>🇬🇧</span>
+        <span className={styles.code}>EN</span>
+      </button>
+    </div>
   );
 }

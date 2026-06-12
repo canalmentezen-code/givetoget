@@ -8,7 +8,7 @@
   backdrop-filter: blur(10px);
 }
 
-.langBtn {
+.currencyBtn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -23,18 +23,18 @@
   transition: all var(--transition-fast);
 }
 
-.langBtn:hover {
+.currencyBtn:hover {
   color: var(--color-text-2);
 }
 
 .active {
-  background: rgba(124, 58, 237, 0.15);
-  border-color: rgba(124, 58, 237, 0.4);
-  color: #a78bfa;
+  background: rgba(20, 184, 166, 0.12);
+  border-color: rgba(20, 184, 166, 0.35);
+  color: #2dd4bf;
 }
 
-.flag {
-  font-size: 0.9rem;
+.symbol {
+  font-size: 0.85rem;
   line-height: 1;
 }
 

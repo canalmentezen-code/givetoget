@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { CurrencyProvider } from "@/components/CurrencyProvider";
+
 export default async function RootLayout({
   children,
 }: {
@@ -30,7 +32,9 @@ export default async function RootLayout({
       <body>
         <SessionProvider>
           <LanguageProvider initialLang={lang}>
-            {children}
+            <CurrencyProvider>
+              {children}
+            </CurrencyProvider>
           </LanguageProvider>
         </SessionProvider>
       </body>

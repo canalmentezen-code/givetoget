@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { getTranslation, Language } from "@/lib/translations";
 import type { Project, CreditTransaction, CreditTxType, Feedback } from "@/types";
 import type { Metadata } from "next";
+import { BuyTokensPanel } from "@/components/credits/BuyTokensPanel";
 import styles from "./page.module.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -322,7 +323,8 @@ export default async function ProfilePage({ searchParams }: Props) {
 
         {activeTab === "transactions" && (
           <section className="glass-card" style={{ padding: 24 }}>
-            <h2 className={styles.sectionTitle} style={{ marginBottom: 16 }}>💸 Extrato de Transações de AT</h2>
+            <BuyTokensPanel />
+            <h2 className={styles.sectionTitle} style={{ marginBottom: 16, borderTop: "1px solid var(--color-border)", paddingTop: 24 }}>💸 Extrato de Transações de AT</h2>
             {transactions.length === 0 ? (
               <p className={styles.empty}>{t("profile.noTx")}</p>
             ) : (

@@ -6,6 +6,8 @@ import { syncUser } from "@/lib/auth-sync.server";
 import { NotificationBell } from "@/components/ui/NotificationBell";
 import { cookies } from "next/headers";
 import { getTranslation, Language } from "@/lib/translations";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { CurrencySwitcher } from "@/components/CurrencySwitcher";
 import styles from "./layout.module.css";
 
 export default async function DashboardLayout({
@@ -79,6 +81,14 @@ export default async function DashboardLayout({
               <span className={styles.userEmail}>{session.user.email}</span>
             </div>
           </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, margin: "12px 0", width: "100%", borderTop: "1px solid var(--color-border)", paddingTop: 12 }}>
+            <div style={{ display: "flex", gap: 6, justifyContent: "space-between" }}>
+              <LanguageSwitcher />
+              <CurrencySwitcher />
+            </div>
+          </div>
+
           <Link href="/api/auth/signout" className={styles.signout} id="signout-btn">
             {t("nav.signOut")}
           </Link>

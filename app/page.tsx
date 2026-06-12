@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/components/LanguageProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { CurrencySwitcher } from "@/components/CurrencySwitcher";
 import styles from "./page.module.css";
 
 export default function LandingPage() {
@@ -44,12 +45,15 @@ export default function LandingPage() {
         {/* Left Column - Core Pitch */}
         <section className={styles.leftCol}>
           <header className={styles.header}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", gap: 16 }}>
               <Link href="/" className={styles.logo}>
                 <img src="/logo.png" alt="GiveToGet Logo" className={styles.logoImg} />
                 <span>GiveToGet</span>
               </Link>
-              <LanguageSwitcher />
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <LanguageSwitcher />
+                <CurrencySwitcher />
+              </div>
             </div>
           </header>
 
