@@ -19,7 +19,7 @@
 
 .bellBtn:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .icon {
@@ -42,69 +42,88 @@
   align-items: center;
   justify-content: center;
   padding: 0 4px;
-  border: 2px solid var(--color-surface, #0f172a);
+  border: 2px solid var(--color-bg-2, #0d1225);
   animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-  70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+  0%   { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70%  { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
   100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
 
+/* ─── Dropdown — fixed positioning to avoid overflow ─────────── */
 .dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
+  position: fixed;
   width: 320px;
-  background: rgba(15, 23, 42, 0.95);
-  backdrop-filter: blur(16px);
+  max-width: calc(100vw - 32px);
+  background: rgba(13, 18, 37, 0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg, 12px);
-  box-shadow: var(--shadow-xl), 0 0 30px rgba(124, 58, 237, 0.1);
-  z-index: 100;
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(124, 58, 237, 0.08);
+  z-index: 9999;
   animation: scaleUp 0.15s ease-out;
+  overflow: hidden;
 }
 
 @keyframes scaleUp {
-  from { opacity: 0; transform: scale(0.95) translateY(-8px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from { opacity: 0; transform: scale(0.96) translateY(-6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
+/* ─── Header ─────────────────────────────────────────────────── */
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--color-border);
 }
 
 .title {
   font-size: 0.875rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--color-text);
+  letter-spacing: 0.01em;
 }
 
 .clearBtn {
   background: transparent;
   border: none;
-  font-size: 0.75rem;
-  color: var(--color-primary-light, #a78bfa);
+  font-size: 0.72rem;
+  color: var(--color-accent, #14b8a6);
   cursor: pointer;
   font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background var(--transition-fast);
 }
 
 .clearBtn:hover {
+  background: rgba(20, 184, 166, 0.08);
   text-decoration: underline;
 }
 
+/* ─── List ───────────────────────────────────────────────────── */
 .list {
-  max-height: 320px;
+  max-height: 360px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
 }
 
+.list::-webkit-scrollbar { width: 4px; }
+.list::-webkit-scrollbar-track { background: transparent; }
+.list::-webkit-scrollbar-thumb {
+  background: var(--color-border-2);
+  border-radius: 4px;
+}
+
+/* ─── Items ──────────────────────────────────────────────────── */
 .item {
   display: flex;
   flex-direction: column;
@@ -112,7 +131,7 @@
   padding: 12px 16px;
   text-decoration: none;
   color: var(--color-text-2, #94a3b8);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid rgba(99, 120, 220, 0.08);
   cursor: pointer;
   transition: background var(--transition-fast);
 }
@@ -127,39 +146,48 @@
 
 .unread {
   background: rgba(124, 58, 237, 0.05);
-  border-left: 3px solid var(--color-primary);
-  color: #fff;
+  border-left: 2px solid var(--color-primary);
+  padding-left: 14px;
 }
 
 .itemHeader {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  gap: 8px;
 }
 
 .itemTitle {
   font-size: 0.8125rem;
   font-weight: 600;
+  color: var(--color-text);
+  flex: 1;
 }
 
 .itemTime {
   font-size: 0.65rem;
   color: var(--color-text-3, #64748b);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .itemMessage {
   font-size: 0.75rem;
-  line-height: 1.4;
+  line-height: 1.45;
   color: var(--color-text-2, #94a3b8);
+  margin: 0;
 }
 
-.item.unread .itemMessage {
-  color: #cbd5e1;
-}
-
+/* ─── Empty state ────────────────────────────────────────────── */
 .empty {
-  padding: 32px 16px;
+  padding: 40px 16px;
   text-align: center;
   font-size: 0.8125rem;
   color: var(--color-text-3, #64748b);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
+
+.empty p { margin: 0; }

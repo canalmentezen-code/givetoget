@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
 import Link from "next/link";
 import styles from "./NotificationBell.module.css";
@@ -11,8 +11,34 @@ interface NotificationBellProps {
 
 export function NotificationBell({ userId }: NotificationBellProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number } | null>(null);
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications(userId);
   const containerRef = useRef<HTMLDivElement>(null);
+  const bellBtnRef = useRef<HTMLButtonElement>(null);
+
+  const updatePosition = useCallback(() => {
+    if (!bellBtnRef.current) return;
+    const rect = bellBtnRef.current.getBoundingClientRect();
+    const dropdownWidth = 320;
+    const margin = 12;
+    const viewportWidth = window.innerWidth;
+
+    // Position below the button, aligned to the right of it — but never off screen
+    let left = rect.right - dropdownWidth;
+    if (left < margin) left = margin;
+    if (left + dropdownWidth > viewportWidth - margin) left = viewportWidth - dropdownWidth - margin;
+
+    setDropdownPos({ top: rect.bottom + 8, left });
+  }, []);
+
+  const toggleOpen = () => {
+    if (!isOpen) {
+      updatePosition();
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
+    }
+  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -20,15 +46,26 @@ export function NotificationBell({ userId }: NotificationBellProps) {
         setIsOpen(false);
       }
     }
+    function handleScroll() {
+      if (isOpen) updatePosition();
+    }
+    function handleResize() {
+      if (isOpen) updatePosition();
+    }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    window.addEventListener("scroll", handleScroll, true);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll, true);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isOpen, updatePosition]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formatTime = (createdAt: any) => {
     if (!createdAt) return "";
     const date = createdAt.toDate ? createdAt.toDate() : new Date(createdAt);
-    // eslint-disable-next-line react-hooks/purity
     const diffMs = Date.now() - date.getTime();
     const diffMin = Math.floor(diffMs / (1000 * 60));
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
@@ -42,28 +79,22 @@ export function NotificationBell({ userId }: NotificationBellProps) {
 
   const getIcon = (type: string) => {
     switch (type) {
-      case "feedback_received":
-        return "💬";
-      case "feedback_approved":
-        return "✅";
-      case "feedback_rejected":
-        return "❌";
-      case "access_requested":
-        return "🔑";
-      case "access_approved":
-        return "🔓";
-      case "achievement":
-        return "⟐";
-      default:
-        return "🔔";
+      case "feedback_received": return "💬";
+      case "feedback_approved": return "✅";
+      case "feedback_rejected": return "❌";
+      case "access_requested": return "🔑";
+      case "access_approved": return "🔓";
+      case "achievement": return "⭐";
+      default: return "🔔";
     }
   };
 
   return (
     <div className={styles.container} ref={containerRef}>
       <button
+        ref={bellBtnRef}
         className={styles.bellBtn}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleOpen}
         aria-label={`Notificações. ${unreadCount} não lidas`}
         id="notification-bell-btn"
       >
@@ -82,8 +113,12 @@ export function NotificationBell({ userId }: NotificationBellProps) {
         {unreadCount > 0 && <span className={styles.badge}>{unreadCount}</span>}
       </button>
 
-      {isOpen && (
-        <div className={styles.dropdown} id="notification-dropdown">
+      {isOpen && dropdownPos && (
+        <div
+          className={styles.dropdown}
+          id="notification-dropdown"
+          style={{ top: dropdownPos.top, left: dropdownPos.left }}
+        >
           <div className={styles.header}>
             <span className={styles.title}>Notificações</span>
             {unreadCount > 0 && (
@@ -94,7 +129,13 @@ export function NotificationBell({ userId }: NotificationBellProps) {
           </div>
           <div className={styles.list}>
             {notifications.length === 0 ? (
-              <div className={styles.empty}>Nenhuma notificação por enquanto.</div>
+              <div className={styles.empty}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.3, marginBottom: 8 }}>
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+                <p>Nenhuma notificação por enquanto.</p>
+              </div>
             ) : (
               notifications.map((n) => (
                 <Link
