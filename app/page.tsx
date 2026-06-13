@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/components/LanguageProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { CurrencySwitcher } from "@/components/CurrencySwitcher";
 import styles from "./page.module.css";
 
 export default function LandingPage() {
@@ -50,10 +49,7 @@ export default function LandingPage() {
                 <img src="/logo.png" alt="GiveToGet Logo" className={styles.logoImg} />
                 <span>GiveToGet</span>
               </Link>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <LanguageSwitcher />
-                <CurrencySwitcher />
-              </div>
+              <LanguageSwitcher />
             </div>
           </header>
 

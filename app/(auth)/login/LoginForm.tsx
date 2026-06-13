@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useLanguage } from "@/components/LanguageProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { CurrencySwitcher } from "@/components/CurrencySwitcher";
 import styles from "./page.module.css";
 
 interface LoginFormProps {
@@ -29,7 +28,6 @@ export default function LoginForm({ githubConfigured, googleConfigured }: LoginF
     <main className={styles.main}>
       <div className={styles.topRight}>
         <LanguageSwitcher />
-        <CurrencySwitcher />
       </div>
 
       <div className={styles.card}>
