@@ -139,20 +139,18 @@
 /* ─── Register Hint ──────────────────────────────────────────── */
 .registerHint {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 12px 14px;
-  background: rgba(20, 184, 166, 0.06);
-  border: 1px solid rgba(20, 184, 166, 0.18);
-  border-radius: var(--radius-md);
   font-size: 0.82rem;
-  color: var(--color-text-2);
+  color: var(--color-text-3);
+  text-align: center;
   line-height: 1.5;
 }
 
 .registerHint svg {
-  color: var(--color-accent);
-  margin-top: 1px;
+  color: var(--color-text-3);
+  opacity: 0.6;
 }
 
 /* ─── Terms & Bonus ──────────────────────────────────────────── */
