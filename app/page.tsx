@@ -260,9 +260,20 @@ export default function LandingPage() {
         </section>
       </div>
 
-      {/* Micro Footer */}
+      {/* Footer */}
       <footer className={styles.footer}>
-        <span>© {new Date().getFullYear()} GiveToGet · The Indie Feedback Loop.</span>
+        <div className={styles.footerLinks}>
+          <a href="#">{t("login.tos")}</a>
+          <span className={styles.divider}>•</span>
+          <a href="#">{t("login.privacy")}</a>
+          <span className={styles.divider}>•</span>
+          <a href="#">{t("login.cookies")}</a>
+          <span className={styles.divider}>•</span>
+          <a href="#">{t("login.gdpr")}</a>
+        </div>
+        <p className={styles.copyright}>
+          {t("login.copyright")}
+        </p>
       </footer>
     </main>
   );
