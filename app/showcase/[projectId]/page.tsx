@@ -212,8 +212,19 @@ export default async function ProjectDetailPage({ params }: Props) {
     const projectSnap = await db.collection("projects").doc(projectId).get();
     if (!projectSnap.exists) notFound();
 
-    project = { id: projectSnap.id, ...projectSnap.data()! } as unknown as Project;
-    isOwner = userId === project.ownerId;
+    const projectData = projectSnap.data()!;
+    isOwner = userId === projectData.ownerId;
+
+    // Increment viewCount atomically if the current visitor is not the owner (or is anonymous)
+    if (!isOwner) {
+      const { FieldValue } = await import("firebase-admin/firestore");
+      await db.collection("projects").doc(projectId).update({
+        viewCount: FieldValue.increment(1)
+      });
+      projectData.viewCount = (projectData.viewCount ?? 0) + 1;
+    }
+
+    project = { id: projectSnap.id, ...projectData } as unknown as Project;
 
     // Privacy check
     hasAccess = isOwner;

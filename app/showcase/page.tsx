@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useProjects } from "@/hooks/useProjects";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { ProjectFilters } from "@/components/projects/ProjectFilters";
@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/Button";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { getClientDb } from "@/lib/firebase.client";
+import { doc, onSnapshot } from "firebase/firestore";
 import styles from "./page.module.css";
 
 const DEMO_PROJECTS = [
@@ -74,6 +76,7 @@ export default function ShowcasePage() {
   const { t, lang } = useLanguage();
   const { data: session } = useSession();
   const isLoggedIn = !!session?.user;
+  const [feedbacksGiven, setFeedbacksGiven] = useState<number | null>(null);
 
   const [filters, setFilters] = useState({
     niche: "",
@@ -90,7 +93,27 @@ export default function ShowcasePage() {
     sortBy: filters.sortBy,
   });
 
-  // Filter and merge demo projects
+  // Listen to user's stats for feedbacksGiven
+  useEffect(() => {
+    if (!session?.user?.id) return;
+    const db = getClientDb();
+    const userRef = doc(db, "users", session.user.id);
+    const unsubscribe = onSnapshot(
+      userRef,
+      (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+          setFeedbacksGiven(data.feedbacksGiven ?? 0);
+        }
+      },
+      (err) => {
+        console.error("Error reading feedbacksGiven stats:", err);
+      }
+    );
+    return () => unsubscribe();
+  }, [session?.user?.id]);
+
+  // Filter and merge demo projects based on onboarding rules
   const demoMatches = DEMO_PROJECTS.filter(p => {
     if (filters.niche && p.niche !== filters.niche) return false;
     if (filters.search) {
@@ -105,7 +128,28 @@ export default function ShowcasePage() {
     return true;
   });
 
-  const projects = [...dbProjects, ...demoMatches];
+  // Decide which demos to show based on login state and onboarding progress
+  let showDemos: any[] = [];
+  if (!isLoggedIn) {
+    // Public visitor: show all 3 demos
+    showDemos = demoMatches;
+  } else {
+    // Authenticated user: onboarding rules
+    // 1. Check if they have listed any projects
+    const hasCreatedProject = dbProjects.some((p: any) => p.ownerId === session?.user?.id);
+    // 2. Check if they have given any feedbacks
+    const hasGivenFeedback = feedbacksGiven !== null && feedbacksGiven > 0;
+
+    // Only show 1 demo (demo-logcraft) if they haven't listed a project AND haven't given feedback
+    if (!hasCreatedProject && !hasGivenFeedback) {
+      showDemos = demoMatches.filter((p) => p.id === "demo-logcraft");
+    } else {
+      // Hide all demos once they start participating
+      showDemos = [];
+    }
+  }
+
+  const projects = [...dbProjects, ...showDemos];
 
   return (
     <div className={styles.page}>

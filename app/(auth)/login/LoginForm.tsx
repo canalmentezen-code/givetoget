@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useLanguage } from "@/components/LanguageProvider";
@@ -16,29 +16,11 @@ interface LoginFormProps {
 export default function LoginForm({ githubConfigured, googleConfigured }: LoginFormProps) {
   const { t, lang } = useLanguage();
   const [loading, setLoading] = useState<string | null>(null);
-  const [showRegisterHint, setShowRegisterHint] = useState(false);
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
 
-  useEffect(() => {
-    try {
-      const hasLoggedIn = localStorage.getItem("givetoget_has_logged_in");
-      if (!hasLoggedIn) {
-        setShowRegisterHint(true);
-      }
-    } catch (e) {
-      // Fallback if localStorage is disabled/restricted
-      setShowRegisterHint(true);
-    }
-  }, []);
-
   const handleSignIn = async (provider: string) => {
     setLoading(provider);
-    try {
-      localStorage.setItem("givetoget_has_logged_in", "true");
-    } catch (e) {
-      console.error("Failed to write to localStorage:", e);
-    }
     await signIn(provider, { callbackUrl: "/showcase" });
   };
 
@@ -111,20 +93,18 @@ export default function LoginForm({ githubConfigured, googleConfigured }: LoginF
           </div>
 
           {/* New Account CTA */}
-          {showRegisterHint && (
-            <div className={styles.registerHint}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, opacity: 0.7 }}>
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
-              </svg>
-              <span>
-                {lang === "en"
-                  ? "New here? Your first login automatically creates your account."
-                  : "Novo por aqui? O teu primeiro login cria a tua conta automaticamente."}
-              </span>
-            </div>
-          )}
+          <div className={styles.registerHint}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, opacity: 0.7 }}>
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <span>
+              {lang === "en"
+                ? "New here? Your first login automatically creates your account."
+                : "Novo por aqui? O teu primeiro login cria a tua conta automaticamente."}
+            </span>
+          </div>
 
           <div className={styles.bonus}>
             {t("login.bonus")}
