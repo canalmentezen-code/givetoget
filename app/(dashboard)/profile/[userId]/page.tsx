@@ -52,10 +52,10 @@ export default async function PublicProfilePage({ params }: Props) {
     <div className={styles.page}>
       {/* Profile Header */}
       <div className={styles.profileCard}>
-        {user.avatarUrl && (
+        {(user.customAvatarUrl || user.avatarUrl) && (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
-            src={user.avatarUrl}
+            src={user.customAvatarUrl || user.avatarUrl}
             alt={user.name ?? "Avatar"}
             className={styles.avatar}
             width={72}

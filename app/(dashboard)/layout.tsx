@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { CreditDisplay } from "@/components/ui/CreditDisplay";
 import { syncUser } from "@/lib/auth-sync.server";
+import { getAdminDb } from "@/lib/firebase.server";
 import { NotificationBell } from "@/components/ui/NotificationBell";
 import { cookies } from "next/headers";
 import { getTranslation, Language } from "@/lib/translations";
@@ -72,6 +73,12 @@ export default async function DashboardLayout({
 
   await syncUser(session.user);
 
+  const db = getAdminDb();
+  const userDoc = await db.collection("users").doc(session.user.id).get();
+  const userData = userDoc.data();
+  const userImage = userData?.customAvatarUrl || userData?.avatarUrl || session.user.image || "";
+  const userName = userData?.name || session.user.name || "User";
+
   const cookieStore = await cookies();
   const lang = (cookieStore.get("lang")?.value || "pt") as Language;
   const t = getTranslation(lang);
@@ -115,23 +122,23 @@ export default async function DashboardLayout({
         <div className={styles.sidebarBottom}>
           <CreditDisplay userId={session.user.id} />
           <div className={styles.userInfo}>
-            {session.user.image && (
+            {userImage && (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
-                src={session.user.image}
-                alt={session.user.name ?? "User"}
+                src={userImage}
+                alt={userName}
                 className={styles.avatar}
                 width={32}
                 height={32}
               />
             )}
             <div className={styles.userMeta}>
-              <span className={styles.userName}>{session.user.name}</span>
+              <span className={styles.userName}>{userName}</span>
               <span className={styles.userEmail}>{session.user.email}</span>
             </div>
           </div>
 
-          <Link href="/api/auth/signout" className={styles.signout} id="signout-btn">
+          <Link href="/logout" className={styles.signout} id="signout-btn">
             <IconLogOut />
             {t("nav.signOut")}
           </Link>

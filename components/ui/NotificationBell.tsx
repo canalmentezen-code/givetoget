@@ -15,6 +15,50 @@ export function NotificationBell({ userId }: NotificationBellProps) {
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications(userId);
   const containerRef = useRef<HTMLDivElement>(null);
   const bellBtnRef = useRef<HTMLButtonElement>(null);
+  const [notificationPermission, setNotificationPermission] = useState<string>("default");
+  const prevUnreadCountRef = useRef(unreadCount);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      setNotificationPermission(Notification.permission);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      "Notification" in window &&
+      Notification.permission === "granted" &&
+      unreadCount > prevUnreadCountRef.current
+    ) {
+      const newUnreads = notifications.filter((n) => !n.read);
+      if (newUnreads.length > 0) {
+        const newest = newUnreads[0];
+        new Notification(newest.title, {
+          body: newest.message,
+          icon: "/logo.png",
+        });
+      }
+    }
+    prevUnreadCountRef.current = unreadCount;
+  }, [unreadCount, notifications]);
+
+  const requestNotificationPermission = async () => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      try {
+        const permission = await Notification.requestPermission();
+        setNotificationPermission(permission);
+        if (permission === "granted") {
+          new Notification("Notificações Ativas! 🎉", {
+            body: "Você receberá atualizações sobre seus feedbacks e acessos em tempo real.",
+            icon: "/logo.png",
+          });
+        }
+      } catch (err) {
+        console.error("Erro ao solicitar permissão de notificações:", err);
+      }
+    }
+  };
 
   const updatePosition = useCallback(() => {
     if (!bellBtnRef.current) return;
@@ -127,6 +171,14 @@ export function NotificationBell({ userId }: NotificationBellProps) {
               </button>
             )}
           </div>
+          {notificationPermission === "default" && (
+            <div className={styles.permissionBanner}>
+              <span className={styles.permissionText}>Deseja receber notificações no navegador?</span>
+              <button className={styles.permissionBtn} onClick={requestNotificationPermission}>
+                Ativar
+              </button>
+            </div>
+          )}
           <div className={styles.list}>
             {notifications.length === 0 ? (
               <div className={styles.empty}>

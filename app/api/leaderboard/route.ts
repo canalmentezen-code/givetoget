@@ -17,7 +17,7 @@ export async function GET() {
       return {
         id: doc.id,
         name: data.name || "Avaliador Anônimo",
-        avatarUrl: data.avatarUrl || null,
+        avatarUrl: data.customAvatarUrl || data.avatarUrl || null,
         feedbacksGiven: data.feedbacksGiven || 0,
         feedbacksReceived: data.feedbacksReceived || 0,
         reputationScore: data.reputationScore !== undefined ? Math.round(data.reputationScore * 100) : 0,

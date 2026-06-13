@@ -1,0 +1,122 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatarWrapper {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid var(--color-border);
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  background: var(--color-bg-3);
+}
+
+.avatarWrapper:hover {
+  border-color: var(--color-primary);
+  transform: scale(1.02);
+}
+
+.avatar {
+  display: block;
+  object-fit: cover;
+  border-radius: var(--radius-full);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 12, 24, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.avatarWrapper:hover .overlay {
+  opacity: 1;
+}
+
+.pencilIcon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-text);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.uploadBtn {
+  background: var(--color-primary);
+  color: var(--color-text);
+  border: none;
+  padding: 6px 12px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.uploadBtn:hover:not(:disabled) {
+  background: var(--color-primary-2);
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.uploadBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.removeBtn {
+  background: transparent;
+  color: var(--color-text-2);
+  border: 1px solid var(--color-border-2);
+  padding: 5px 12px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+}
+
+.removeBtn:hover:not(:disabled) {
+  border-color: var(--color-text-2);
+  color: var(--color-text);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.removeBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  font-size: 0.75rem;
+  color: var(--color-danger);
+  margin-top: 4px;
+}
+
+/* Responsive adjustment */
+@media (max-width: 480px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+  
+  .actions {
+    align-items: center;
+  }
+}

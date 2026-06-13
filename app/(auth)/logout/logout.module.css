@@ -1,0 +1,80 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+  background: var(--color-bg);
+  position: relative;
+  z-index: 1;
+}
+
+.card {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px 24px;
+  text-align: center;
+  animation: fadeInUp 0.4s ease both;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.logoWrapper {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.logo {
+  width: 56px;
+  height: 56px;
+  filter: drop-shadow(0 0 12px var(--color-primary-glow));
+  animation: pulseLogo 2s infinite ease-in-out;
+}
+
+@keyframes pulseLogo {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 8px var(--color-primary-glow));
+  }
+  50% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 18px var(--color-primary-glow));
+  }
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  font-family: var(--font-heading);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--color-text-2);
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+.spinnerWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

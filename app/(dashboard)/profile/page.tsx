@@ -7,6 +7,7 @@ import { getTranslation, Language } from "@/lib/translations";
 import type { Project, CreditTransaction, CreditTxType, Feedback } from "@/types";
 import type { Metadata } from "next";
 import { BuyTokensPanel } from "@/components/credits/BuyTokensPanel";
+import AvatarUploader from "@/components/profile/AvatarUploader";
 import styles from "./page.module.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -151,16 +152,12 @@ export default async function ProfilePage({ searchParams }: Props) {
     <div className={styles.page}>
       {/* Profile Header */}
       <div className={styles.profileCard}>
-        {session.user.image && (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            src={session.user.image}
-            alt={session.user.name ?? "Avatar"}
-            className={styles.avatar}
-            width={72}
-            height={72}
-          />
-        )}
+        <AvatarUploader
+          userId={userId}
+          initialAvatar={user.customAvatarUrl || user.avatarUrl || session.user.image || ""}
+          fallbackAvatar={user.avatarUrl || session.user.image || ""}
+          userName={session.user.name ?? "User"}
+        />
         <div className={styles.profileInfo}>
           <h1 className={styles.name}>{session.user.name}</h1>
           <p className={styles.email}>{session.user.email}</p>
