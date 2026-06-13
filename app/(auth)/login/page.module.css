@@ -1,11 +1,20 @@
 .main {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  padding: 24px;
+  padding: 40px 24px 24px 24px;
   position: relative;
   z-index: 1;
+}
+
+.cardContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .topRight {
@@ -155,21 +164,48 @@
   margin-top: 1px;
 }
 
-/* ─── Terms & Bonus ──────────────────────────────────────────── */
-.terms {
-  font-size: 0.78rem;
+/* ─── Footer & Compliance Links ──────────────────────────────── */
+.footer {
+  width: 100%;
+  max-width: 420px;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.76rem;
   color: var(--color-text-3);
   text-align: center;
-  line-height: 1.5;
 }
 
-.terms a {
+.footerLinks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footerLinks a {
+  color: var(--color-text-3);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.footerLinks a:hover {
   color: var(--color-text-2);
-  text-decoration: underline;
-  text-underline-offset: 2px;
 }
 
-.terms a:hover { color: var(--color-text); }
+.divider {
+  color: var(--color-text-3);
+  opacity: 0.4;
+  user-select: none;
+}
+
+.copyright {
+  opacity: 0.7;
+  margin: 0;
+}
 
 .bonus {
   display: flex;

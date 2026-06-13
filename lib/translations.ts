@@ -72,6 +72,9 @@ export const translations = {
       tos: "Termos de Serviço",
       privacy: "Política de Privacidade",
       bonus: "🎁 Ganhe 10 AT no cadastro + bônus de 15 AT ao postar o primeiro projeto!",
+      gdpr: "Conformidade RGPD",
+      cookies: "Política de Cookies",
+      copyright: "© 2026 GiveToGet. Todos os direitos reservados.",
     },
     submit: {
       title: "Listar seu Projeto",
@@ -235,6 +238,9 @@ export const translations = {
       tos: "Terms of Service",
       privacy: "Privacy Policy",
       bonus: "🎁 Get 10 AT on signup + 15 AT bonus when posting your first project for free!",
+      gdpr: "GDPR Compliance",
+      cookies: "Cookie Policy",
+      copyright: "© 2026 GiveToGet. All rights reserved.",
     },
     submit: {
       title: "List Your Project",

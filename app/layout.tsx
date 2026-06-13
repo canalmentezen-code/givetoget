@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 };
 
 import { CurrencyProvider } from "@/components/CurrencyProvider";
+import { CookieBanner } from "@/components/CookieBanner";
 
 export default async function RootLayout({
   children,
@@ -34,6 +35,7 @@ export default async function RootLayout({
           <LanguageProvider initialLang={lang}>
             <CurrencyProvider>
               {children}
+              <CookieBanner />
             </CurrencyProvider>
           </LanguageProvider>
         </SessionProvider>
