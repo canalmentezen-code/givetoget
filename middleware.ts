@@ -7,7 +7,6 @@ export async function middleware(req: NextRequest) {
 
   // Protect all dashboard routes
   const isDashboardRoute =
-    pathname.startsWith("/showcase") ||
     pathname.startsWith("/submit") ||
     pathname.startsWith("/profile") ||
     pathname.startsWith("/access-requests");
@@ -26,7 +25,6 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    "/showcase/:path*",
     "/submit/:path*",
     "/profile/:path*",
     "/access-requests/:path*",

@@ -23,6 +23,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
             {isFeatured && (
               <Badge variant="gold" size="sm">🏆 Destaque</Badge>
             )}
+            {(project as any).isDemo && (
+              <Badge variant="accent" size="sm">💡 Demo</Badge>
+            )}
             <ProjectStatusBadge status={project.status} />
           </div>
         </div>
